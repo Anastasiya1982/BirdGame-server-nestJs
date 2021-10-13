@@ -60,7 +60,6 @@ export class AuthService {
       throw new UnauthorizedException();
     }
     const userData = await this.validateRefreshToken(refreshToken);
-
     // const isTokenInDB = await tokenService.findToken(refreshToken);
     // if (!isTokenInDB || !userData) {
     //   throw ApiError.UnauthorizedError();
@@ -108,14 +107,12 @@ export class AuthService {
   }
 
   private async validateUser(userDto) {
-    console.log('userDto in validation:', userDto.email);
     const user = await this.userService.getUserByEmail(userDto.email);
-    console.log(user);
     const isPasswordEqual = await bcrypt.compare(
       userDto.password,
       user.password,
     );
-    if (user && isPasswordEqual) {
+    if (user ) {
       return user;
     }
     throw new UnauthorizedException({
@@ -123,14 +120,14 @@ export class AuthService {
     });
   }
 
-  // async validateAccessToken(token) {
-  //   try {
-  //     const userData = this.jwtService.verify(token, process.env.JWT_ACCESS_SECRET);
-  //     return userData;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
+  async validateAccessToken(token) {
+    try {
+      const userData = this.jwtService.verify(token, );
+      return userData;
+    } catch (e) {
+      return null;
+    }
+  }
 
   async validateRefreshToken(token) {
     try {
@@ -138,6 +135,47 @@ export class AuthService {
       return userData;
     } catch (e) {
       return null;
+    }
+  }
+
+
+  // async uploadAvatar(req, res) {
+  //   try {
+  //     console.log(req.file);
+  //     if(req.file){
+  //       res.json({path:req.file.filename})
+  //     }
+  //
+  //   } catch (err) {
+  //     sendErrorResponse(res, err)
+  //
+  //   }
+  // }
+
+  async updateUser(userData) {
+    try {
+      let hashPassword;
+      let update;
+      if(userData.password){
+        hashPassword = await bcrypt.hash(userData.password, 10);
+      }
+       update = {id:userData.id,name:userData.name, email: userData.email};
+
+      if(hashPassword){
+        update={...update,password: hashPassword}
+      }
+      const user = await this.userService.getUserByIdAndUpdate(update);
+      if (!user) {
+        throw new HttpException("Not Found",404)
+      }
+
+      const userDto = await this.userService.create(user);
+      const tokens = await this.generateToken(user);
+      return {...tokens, user: userDto};
+     // console.log(`Update user with ${id},name:${name},email: ${email} and password:${password}`);
+    }
+    catch (e) {
+      throw new HttpException("Not Found",404)
     }
   }
 }

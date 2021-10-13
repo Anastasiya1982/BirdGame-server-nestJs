@@ -36,4 +36,9 @@ export class UserService {
     const user = await this.userModel.findOne({ link });
     return user;
   }
+  async  getUserByIdAndUpdate(userDto){
+    const option = {new: true}
+    const user=await this.userModel.findOneAndUpdate(userDto,option).exec();
+    return  user;
+  }
 }

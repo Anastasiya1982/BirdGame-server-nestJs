@@ -9,7 +9,7 @@ async function start() {
   const corsOptions = {
     credentials: true,
     origin: 'http://localhost:3000',
-    methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS',"PUT"],
     allowedHeaders: ['Content-Type', 'Authorization'],
   };
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: corsOptions });
