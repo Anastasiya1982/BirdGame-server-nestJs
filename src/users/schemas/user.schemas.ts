@@ -13,6 +13,9 @@ export class User {
 
   @Prop()
   password: string;
+  @Prop({required:false})
+  id: string;
+
 
   @Prop({ default: false })
   isActivated: boolean;

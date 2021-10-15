@@ -11,13 +11,24 @@ import { Request, Response } from 'express';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UpdateUserDto } from '../users/dto/update-user.dto';
+import { User } from '../users/schemas/user.schemas';
+import { LoginUserDto } from '../users/dto/login-user-dto';
 const MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000;
 
+
+@ApiTags("auth")
 @Controller('api')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/login')
+  @ApiResponse({
+    status:200,
+    description:"user login successfully"
+  })
+  @ApiBody({type:LoginUserDto})
   async login(
     @Req()  request:Request,
     @Res({ passthrough: true }) response: Response,
@@ -32,6 +43,11 @@ export class AuthController {
   }
 
   @Post('/registration')
+  @ApiResponse({
+    status:200,
+    description:"new user is registered"
+  })
+  @ApiBody({type:CreateUserDto})
   async registration(
     @Body() userDto: CreateUserDto,
     @Res({ passthrough: true }) response: Response,
@@ -78,6 +94,12 @@ export class AuthController {
   }
 
   @Put('/update')
+  @ApiResponse({
+    status:200,
+    description:"user update",
+    type:User
+  })
+  @ApiBody({type:UpdateUserDto})
   async updateUser(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,

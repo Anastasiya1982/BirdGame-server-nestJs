@@ -41,4 +41,5 @@ export class UserService {
     const user = await this.userModel.findOneAndUpdate(userDto, option).exec();
     return user;
   }
+
 }

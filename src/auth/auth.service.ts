@@ -45,7 +45,7 @@ export class AuthService {
 
   async login(userDto) {
     const user = await this.validateUser(userDto);
-    const currentUser = await this.userService.create(user);
+    const currentUser = await this.userService.create({...user});
     const tokens = await this.generateToken(currentUser);
     return { ...tokens, user: currentUser };
   }
@@ -162,10 +162,8 @@ export class AuthService {
       if (!user) {
         throw new HttpException('Not Found', 404);
       }
-
-      const userDto = await this.userService.create(user);
       const tokens = await this.generateToken(user);
-      return { ...tokens, user: userDto };
+      return { ...tokens, user: user };
       // console.log(`Update user with ${id},name:${name},email: ${email} and password:${password}`);
     } catch (e) {
       throw new HttpException('Not Found', 404);
