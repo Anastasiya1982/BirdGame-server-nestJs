@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { CreateUserDto } from './dto/create-user.dto';
-import { User, UserDocument } from './schemas/user.schemas';
 import { InjectModel } from '@nestjs/mongoose';
 
+import { CreateUserDto } from './dto/create-user.dto';
+import { User, UserDocument } from './schemas/user.schemas';
 
 @Injectable()
 export class UserService {
@@ -36,9 +36,9 @@ export class UserService {
     const user = await this.userModel.findOne({ link });
     return user;
   }
-  async  getUserByIdAndUpdate(userDto){
-    const option = {new: true}
-    const user=await this.userModel.findOneAndUpdate(userDto,option).exec();
-    return  user;
+  async getUserByIdAndUpdate(userDto) {
+    const option = { new: true };
+    const user = await this.userModel.findOneAndUpdate(userDto, option).exec();
+    return user;
   }
 }

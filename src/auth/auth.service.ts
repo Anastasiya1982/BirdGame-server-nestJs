@@ -5,20 +5,19 @@ import {
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { UserService } from '../users/user.service';
-import { JwtService } from '@nestjs/jwt';
 import * as uuid from 'uuid';
 import * as bcrypt from 'bcrypt';
-// import { MailService } from '../mail/mail.service';
-import { uid, suid } from 'rand-token';
+import { suid } from 'rand-token';
+import { JwtService } from '@nestjs/jwt';
+
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UserService } from '../users/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-    // private mailService: MailService,
   ) {}
 
   async registration(userDto: CreateUserDto) {
@@ -51,8 +50,8 @@ export class AuthService {
     return { ...tokens, user: currentUser };
   }
 
-  async logout(userDto) {
-    console.log('logout user');
+  async logout(userDto: CreateUserDto) {
+    console.log('logout user',userDto);
   }
 
   async refresh(refreshToken) {
@@ -60,10 +59,6 @@ export class AuthService {
       throw new UnauthorizedException();
     }
     const userData = await this.validateRefreshToken(refreshToken);
-    // const isTokenInDB = await tokenService.findToken(refreshToken);
-    // if (!isTokenInDB || !userData) {
-    //   throw ApiError.UnauthorizedError();
-    // }
     const user = await this.userService.getById(userData.id);
     const userDto = await this.userService.create(user);
     const tokens = await this.generateToken(user);
@@ -112,7 +107,7 @@ export class AuthService {
       userDto.password,
       user.password,
     );
-    if (user ) {
+    if (user) {
       return user;
     }
     throw new UnauthorizedException({
@@ -122,7 +117,7 @@ export class AuthService {
 
   async validateAccessToken(token) {
     try {
-      const userData = this.jwtService.verify(token, );
+      const userData = this.jwtService.verify(token);
       return userData;
     } catch (e) {
       return null;
@@ -137,7 +132,6 @@ export class AuthService {
       return null;
     }
   }
-
 
   // async uploadAvatar(req, res) {
   //   try {
@@ -156,26 +150,25 @@ export class AuthService {
     try {
       let hashPassword;
       let update;
-      if(userData.password){
+      if (userData.password) {
         hashPassword = await bcrypt.hash(userData.password, 10);
       }
-       update = {id:userData.id,name:userData.name, email: userData.email};
+      update = { id: userData.id, name: userData.name, email: userData.email };
 
-      if(hashPassword){
-        update={...update,password: hashPassword}
+      if (hashPassword) {
+        update = { ...update, password: hashPassword };
       }
       const user = await this.userService.getUserByIdAndUpdate(update);
       if (!user) {
-        throw new HttpException("Not Found",404)
+        throw new HttpException('Not Found', 404);
       }
 
       const userDto = await this.userService.create(user);
       const tokens = await this.generateToken(user);
-      return {...tokens, user: userDto};
-     // console.log(`Update user with ${id},name:${name},email: ${email} and password:${password}`);
-    }
-    catch (e) {
-      throw new HttpException("Not Found",404)
+      return { ...tokens, user: userDto };
+      // console.log(`Update user with ${id},name:${name},email: ${email} and password:${password}`);
+    } catch (e) {
+      throw new HttpException('Not Found', 404);
     }
   }
 }

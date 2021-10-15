@@ -19,12 +19,10 @@ export class AuthController {
 
   @Post('/login')
   async login(
-    // @Body() userDto: CreateUserDto,
     @Req()  request:Request,
     @Res({ passthrough: true }) response: Response,
   ) {
     try {
-      console.log("request login" ,request.body)
       const userData = await this.authService.login(request.body);
       response.cookie('refreshToken', userData.refreshToken);
       return userData;
@@ -68,7 +66,6 @@ export class AuthController {
   ) {
     try {
       const { refreshToken } = request.cookies;
-      console.log(refreshToken);
       const userData = await this.authService.refresh(refreshToken);
       response.cookie('refreshToken', userData.refreshToken, {
         maxAge: MONTH_IN_MS,
@@ -87,7 +84,6 @@ export class AuthController {
   ){
     try{
       const { refreshToken } = request.cookies;
-      console.log(request.body);
       const userData = await this.authService.updateUser(request.body);
       response.cookie('refreshToken', userData.refreshToken,
         {maxAge: MONTH_IN_MS, httpOnly: true});

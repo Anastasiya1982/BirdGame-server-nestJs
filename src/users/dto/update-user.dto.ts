@@ -4,6 +4,5 @@ export class UpdateUserDto {
   id: string;
   isActivated: boolean;
   activationLink: string;
-
   readonly password: string;
 }
