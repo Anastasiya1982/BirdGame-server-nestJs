@@ -2,35 +2,39 @@ import {
   Body,
   Controller,
   Get,
-  Post, Put,
+  Post,
+  Put,
   Req,
   Res,
-  UnauthorizedException, UploadedFile, UseInterceptors,
+  UnauthorizedException,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { AuthService } from './auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { UpdateUserDto } from '../users/dto/update-user.dto';
 import { User } from '../users/schemas/user.schemas';
 import { LoginUserDto } from '../users/dto/login-user-dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { AuthService } from './auth.service';
+
 const MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000;
 
-
-@ApiTags("auth")
+@ApiTags('auth')
 @Controller('api')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/login')
   @ApiResponse({
-    status:200,
-    description:"user login successfully"
+    status: 200,
+    description: 'user login successfully',
   })
-  @ApiBody({type:LoginUserDto})
+  @ApiBody({ type: LoginUserDto })
   async login(
-    @Req()  request:Request,
+    @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
     try {
@@ -44,10 +48,10 @@ export class AuthController {
 
   @Post('/registration')
   @ApiResponse({
-    status:200,
-    description:"new user is registered"
+    status: 200,
+    description: 'new user is registered',
   })
-  @ApiBody({type:CreateUserDto})
+  @ApiBody({ type: CreateUserDto })
   async registration(
     @Body() userDto: CreateUserDto,
     @Res({ passthrough: true }) response: Response,
@@ -95,35 +99,35 @@ export class AuthController {
 
   @Put('/update')
   @ApiResponse({
-    status:200,
-    description:"user update",
-    type:User
+    status: 200,
+    description: 'user update',
+    type: User,
   })
-  @ApiBody({type:UpdateUserDto})
+  @ApiBody({ type: UpdateUserDto })
   async updateUser(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
-  ){
-    try{
+  ) {
+    try {
       const { refreshToken } = request.cookies;
       const userData = await this.authService.updateUser(request.body);
-      response.cookie('refreshToken', userData.refreshToken,
-        {maxAge: MONTH_IN_MS, httpOnly: true});
-      return userData
-    }
-    catch (e) {
+      response.cookie('refreshToken', userData.refreshToken, {
+        maxAge: MONTH_IN_MS,
+        httpOnly: true,
+      });
+      return userData;
+    } catch (e) {
       throw new UnauthorizedException();
     }
   }
 
   @Post('/upload')
   @UseInterceptors(
-    FileInterceptor("photo",{
-      dest:"./uploads",
-    })
+    FileInterceptor('photo', {
+      dest: './uploads',
+    }),
   )
-  uploadSingle(@UploadedFile() file){
-    console.log(file)
+  uploadSingle(@UploadedFile() file) {
+    console.log(file);
   }
-
 }
