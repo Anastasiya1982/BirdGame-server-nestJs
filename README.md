@@ -32,7 +32,8 @@ It uses modern JavaScript, is built with TypeScript.
 
 ## Running the app
 
-Before running the app  you need to create a new cluster to save data to MongoDB <a href="https://www.mongodb.com" target="_blank"></a>.
+Before running the app  you need to create a new cluster to save data to MongoDB <a href="https://www.mongodb.com" target="_blank"> https://www.mongodb.com
+</a>.
 
 Then to fill  the .env file: 
 
