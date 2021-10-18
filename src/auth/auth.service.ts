@@ -34,11 +34,7 @@ export class AuthService {
     const user = await this.userService.create({
       ...userDto,
       password: hashPassword,
-    });
-    // await this.mailService.sendUserConfirmation(
-    //   user,
-    //   `$http://localhost:5000/api/activate/${activationLink}`,
-    // );
+    });    
     const tokens = await this.generateToken(user);
     return { ...tokens, user };
   }

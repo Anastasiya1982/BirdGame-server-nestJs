@@ -30,20 +30,32 @@ It uses modern JavaScript, is built with TypeScript.
 
 
 
-## Running the app
+## Getting started
 
-Before running the app  you need to create a new cluster to save data to MongoDB <a href="https://www.mongodb.com" target="_blank"> https://www.mongodb.com
-</a>.
+### Installing dependencies
 
-Then to fill  the .env file: 
 
- pass MONGOOSE with a link to your claster;
- 
- fill in the EMAIL USER with your email data (gmail is used in the application)
- 
-  also insert the email password in the parameters
+First, you need to install all the needed dependencies.
 
-# watch mode
+$ npm install
+
+
+###  Add your own  credentials
+ There are a special  configurations for the database in the  .env file.
+
+ You need to add your own:
+
+ #### MongoDB
+Ensure that you have mongoDB installed on your machine or  that you have mongoDB cluster or create a new cluster to save data to MongoDB <a href="https://www.mongodb.com" target="_blank"> https://www.mongodb.com</a>.
+ Add your connection IP address to your IP Access List  in file.env to MONGOOSE=
+
+#### Mail
+The Gmail service is used to send an activation link. Ensure thet you have gmail account and pass in to .env file after  EMAIL_USER=
+
+Ensure thet you have  passed the password of your account  in to .env file after EMAIL_PASSWORD=
+
+
+## Run the application 
 
 $ npm run start:dev
 
