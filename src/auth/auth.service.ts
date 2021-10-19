@@ -5,13 +5,14 @@ import {
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
-import * as uuid from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { suid } from 'rand-token';
 import { JwtService } from '@nestjs/jwt';
 
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UserService } from '../users/user.service';
+
+let NUM_OF_DAY=6;
 
 @Injectable()
 export class AuthService {
@@ -27,8 +28,7 @@ export class AuthService {
         `The user with such ${userDto.email} email is already exist`,
         HttpStatus.BAD_REQUEST,
       );
-    }
-    const activationLink = uuid.v4();
+    }    
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(userDto.password, salt);
     const user = await this.userService.create({
@@ -41,14 +41,12 @@ export class AuthService {
 
   async login(userDto) {
     const user = await this.validateUser(userDto);
-    const currentUser = await this.userService.create({...user});
+    const currentUser = await this.userService.create({ ...user });
     const tokens = await this.generateToken(currentUser);
     return { ...tokens, user: currentUser };
   }
 
-  async logout(userDto: CreateUserDto) {
-    console.log('logout user',userDto);
-  }
+  async logout(userDto: CreateUserDto) {}
 
   async refresh(refreshToken) {
     if (!refreshToken) {
@@ -72,7 +70,7 @@ export class AuthService {
   async generateRefreshToken(user): Promise<string> {
     const refreshToken = suid(16);
     const expirydate = new Date();
-    expirydate.setDate(expirydate.getDate() + 6);
+    expirydate.setDate(expirydate.getDate()+ NUM_OF_DAY );
     await this.userService.saveorupdateRefreshToke(
       user.id,
       refreshToken,
@@ -127,20 +125,7 @@ export class AuthService {
     } catch (e) {
       return null;
     }
-  }
-
-  // async uploadAvatar(req, res) {
-  //   try {
-  //     console.log(req.file);
-  //     if(req.file){
-  //       res.json({path:req.file.filename})
-  //     }
-  //
-  //   } catch (err) {
-  //     sendErrorResponse(res, err)
-  //
-  //   }
-  // }
+  }  
 
   async updateUser(userData) {
     try {
@@ -159,8 +144,7 @@ export class AuthService {
         throw new HttpException('Not Found', 404);
       }
       const tokens = await this.generateToken(user);
-      return { ...tokens, user: user };
-      // console.log(`Update user with ${id},name:${name},email: ${email} and password:${password}`);
+      return { ...tokens, user: user };    
     } catch (e) {
       throw new HttpException('Not Found', 404);
     }

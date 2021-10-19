@@ -5,7 +5,7 @@ export class LoginUserDto {
   @ApiProperty()
   email: string;
 
-  @ApiProperty({required:false})
+  @ApiProperty({ required:false })
   password: string;
 
 }

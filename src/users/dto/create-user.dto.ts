@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
-  @ApiProperty({required:false})
+  @ApiProperty({ required:false })
   name: string;
 
   @ApiProperty()
@@ -12,12 +12,12 @@ export class CreateUserDto {
   })
   id: string;
 
-  @ApiProperty({required:false})
+  @ApiProperty({ required:false })
   isActivated: boolean;
 
-  @ApiProperty({required:false})
+  @ApiProperty({ required:false })
   password: string;
 
-  @ApiProperty({required:false})
+  @ApiProperty({ required:false })
   activationLink: string;
 }

@@ -28,14 +28,17 @@ export class UserService {
       refreshtokenexpires,
     });
   }
+
   async getUserByEmail(email) {
     const user = await this.userModel.findOne({ email });
     return user;
   }
+
   async getUserByLink(link: string) {
     const user = await this.userModel.findOne({ link });
     return user;
   }
+  
   async getUserByIdAndUpdate(userDto) {
     const option = { new: true };
     const user = await this.userModel.findOneAndUpdate(userDto, option).exec();

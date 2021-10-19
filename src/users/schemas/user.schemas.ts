@@ -5,17 +5,18 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
+
   @Prop({ default: '' })
   name: string;
 
   @Prop({ unique: true, required: true })
   email: string;
 
-  @Prop()
+  @Prop()  
   password: string;
-  @Prop({required:false})
-  id: string;
 
+  @Prop({ required:false })
+  id: string;
 
   @Prop({ default: false })
   isActivated: boolean;
